@@ -4,6 +4,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../App.css";
 import "../Contact.css";
 
+const Modal = ({ onClose }) => (
+  <div className="modal-overlay">
+    <div className="modal">
+      <p>Reservation completed successfully!</p>
+      <button onClick={onClose}>OK</button>
+    </div>
+  </div>
+);
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -12,7 +21,7 @@ const Contact = () => {
   });
   const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
+  const [showModal, setShowModal] = useState(false); 
 
   const minDate = new Date();
   const maxDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
@@ -72,10 +81,14 @@ const Contact = () => {
       setErrors(validationErrors);
     } else {
       setErrors({});
-      setSuccessMessage("Reservation completed successfully!");
+      setShowModal(true); 
       setFormData({ name: "", people: "", message: "" });
       setSelectedDateTime(null);
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false); 
   };
 
   return (
@@ -92,7 +105,7 @@ const Contact = () => {
       <h2 className="form-heading">
         Reserve a table, ask for today’s special or just send us a message:
       </h2>
-      {successMessage && <p className="success-text">{successMessage}</p>}
+      {showModal && <Modal onClose={closeModal} />} {}
       <form className="contact-form" onSubmit={handleSubmit}>
         <input
           type="text"
@@ -103,7 +116,7 @@ const Contact = () => {
           onChange={handleChange}
         />
         {errors.name && <p className="error-text">{errors.name}</p>}
-        
+
         <input
           type="number"
           name="people"
@@ -113,7 +126,7 @@ const Contact = () => {
           onChange={handleChange}
         />
         {errors.people && <p className="error-text">{errors.people}</p>}
-        
+
         <DatePicker
           selected={selectedDateTime}
           onChange={handleDateChange}
@@ -129,7 +142,7 @@ const Contact = () => {
           className={`form-input ${errors.date ? "error-border" : ""}`}
         />
         {errors.date && <p className="error-text">{errors.date}</p>}
-        
+
         <textarea
           name="message"
           className={`form-input ${errors.message ? "error-border" : ""}`}
@@ -139,7 +152,7 @@ const Contact = () => {
           maxLength={250}
         />
         {errors.message && <p className="error-text">{errors?.message}</p>}
-        
+
         <button type="submit" className="form-button">
           Send Message
         </button>
